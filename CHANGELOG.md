@@ -1,6 +1,11 @@
 
-
 # Changelog
+
+## v0.3.0 (2025-10-02)
+
+- Added Option[T] type for safe, idiomatic optional values (Rust-like Some/None).
+- Added GroupBy, Chunk, Unique, and Flatten slice utilities.
+- Added tests and documentation for these new utilities.
 
 
 

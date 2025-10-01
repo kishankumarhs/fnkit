@@ -3,6 +3,56 @@ package fnkit
 
 import "fmt"
 
+// GroupBy groups the elements of the slice 's' by a key function 'keyFn'.
+// Returns a map from key to slice of elements.
+func GroupBy[K any, T comparable](s []K, keyFn func(K) T) map[T][]K {
+	result := make(map[T][]K)
+	for _, v := range s {
+		key := keyFn(v)
+		result[key] = append(result[key], v)
+	}
+	return result
+}
+
+// Chunk splits the slice 's' into chunks of size 'size'.
+// The last chunk may be smaller if the slice doesn't divide evenly.
+func Chunk[K any](s []K, size int) [][]K {
+	if size <= 0 {
+		return nil
+	}
+	var result [][]K
+	for i := 0; i < len(s); i += size {
+		end := i + size
+		if end > len(s) {
+			end = len(s)
+		}
+		result = append(result, s[i:end])
+	}
+	return result
+}
+
+// Unique returns a new slice with duplicate elements removed (preserves order).
+func Unique[K comparable](s []K) []K {
+	seen := make(map[K]struct{})
+	var result []K
+	for _, v := range s {
+		if _, ok := seen[v]; !ok {
+			seen[v] = struct{}{}
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
+// Flatten flattens a slice of slices of any depth (2D only).
+func Flatten[K any](s [][]K) []K {
+	var result []K
+	for _, sub := range s {
+		result = append(result, sub...)
+	}
+	return result
+}
+
 // Map applies a transformation function 'f' to each element of the input slice 's'
 // and returns a new slice containing the results.
 //
@@ -303,9 +353,9 @@ func Slice[K any](s []K, start, end int) []K {
 	return s[start:end]
 }
 
-// Some returns true if at least one element in the slice 's' satisfies the predicate function 'f'.
+// Any returns true if at least one element in the slice 's' satisfies the predicate function 'f'.
 // It returns false if no elements satisfy the condition.
-func Some[K any](s []K, f func(K) bool) bool {
+func Any[K any](s []K, f func(K) bool) bool {
 	for _, v := range s {
 		if f(v) {
 			return true

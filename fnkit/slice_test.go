@@ -9,6 +9,59 @@ import (
 	"github.com/kishankumarhs/fnkit"
 )
 
+func TestGroupBy(t *testing.T) {
+	nums := []int{1, 2, 3, 4, 5, 6}
+	grouped := fnkit.GroupBy(nums, func(n int) string {
+		if n%2 == 0 {
+			return "even"
+		}
+		return "odd"
+	})
+	if !reflect.DeepEqual(grouped["even"], []int{2, 4, 6}) {
+		t.Errorf("GroupBy even failed: %v", grouped["even"])
+	}
+	if !reflect.DeepEqual(grouped["odd"], []int{1, 3, 5}) {
+		t.Errorf("GroupBy odd failed: %v", grouped["odd"])
+	}
+}
+
+func TestChunk(t *testing.T) {
+	nums := []int{1, 2, 3, 4, 5}
+	chunks := fnkit.Chunk(nums, 2)
+	expected := [][]int{{1, 2}, {3, 4}, {5}}
+	if !reflect.DeepEqual(chunks, expected) {
+		t.Errorf("Chunk() = %v, want %v", chunks, expected)
+	}
+	if out := fnkit.Chunk(nums, 0); out != nil {
+		t.Errorf("Chunk() with size 0 should return nil")
+	}
+}
+
+func TestUnique(t *testing.T) {
+	nums := []int{1, 2, 2, 3, 1, 4}
+	uniq := fnkit.Unique(nums)
+	expected := []int{1, 2, 3, 4}
+	if !reflect.DeepEqual(uniq, expected) {
+		t.Errorf("Unique() = %v, want %v", uniq, expected)
+	}
+	empty := []int{}
+	if got := fnkit.Unique(empty); len(got) != 0 {
+		t.Errorf("Unique() on empty = %v, want []", got)
+	}
+}
+
+func TestFlatten(t *testing.T) {
+	nested := [][]int{{1, 2}, {}, {3}, {4, 5}}
+	flat := fnkit.Flatten(nested)
+	expected := []int{1, 2, 3, 4, 5}
+	if !reflect.DeepEqual(flat, expected) {
+		t.Errorf("Flatten() = %v, want %v", flat, expected)
+	}
+	if got := fnkit.Flatten([][]int{}); len(got) != 0 {
+		t.Errorf("Flatten() on empty = %v, want []", got)
+	}
+}
+
 // Write a test for the ToFilter function
 func TestToFilter(t *testing.T) {
 	// Test case 1: Filter even numbers from a slice of integers
@@ -447,10 +500,10 @@ func TestSlice(t *testing.T) {
 
 func TestSome(t *testing.T) {
 	s := []int{1, 2, 3}
-	if !fnkit.Some(s, func(i int) bool { return i == 2 }) {
+	if !fnkit.Any(s, func(i int) bool { return i == 2 }) {
 		t.Errorf("Some() = false, want true")
 	}
-	if fnkit.Some(s, func(i int) bool { return i == 100 }) {
+	if fnkit.Any(s, func(i int) bool { return i == 100 }) {
 		t.Errorf("Some() = true, want false")
 	}
 }

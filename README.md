@@ -1,9 +1,75 @@
 
-# fnkit
 
-**fnkit** is a modern Go utility library inspired by the best of JavaScript (like Lodash, Array methods) and Rust (Result type, functional error handling). It brings expressive, type-safe, and composable utilities to Go, making your code more concise, robust, and fun to write.
+## Option[T] (Rust-like optional values)
 
-`fnkit` provides a comprehensive set of generic, functional utilities for working with Go slices and error handling. All functions are generic and work with any type.
+`Option[T]` is a generic container for an optional value, inspired by Rust. It allows for safe, idiomatic handling of values that may or may not be present, without using nil pointers.
+
+**Example: Some and None**
+
+```go
+opt := fnkit.Some(42)
+if opt.IsSome() {
+    fmt.Println("Value:", opt.Unwrap()) // prints 42
+}
+
+none := fnkit.None[int]()
+if none.IsNone() {
+    fmt.Println("No value")
+}
+```
+
+**Example: UnwrapOr**
+
+```go
+opt := fnkit.Some("hello")
+val := opt.UnwrapOr("default") // val == "hello"
+
+none := fnkit.None[string]()
+val2 := none.UnwrapOr("default") // val2 == "default"
+```
+
+**Edge Cases**
+
+- `Some(zeroValue)` is valid and `IsSome()` is true.
+- `None[T]()` is always `IsNone()`.
+- Works with any type, including structs.
+
+## GroupBy
+
+```go
+nums := []int{1, 2, 3, 4, 5, 6}
+grouped := fnkit.GroupBy(nums, func(n int) string {
+    if n%2 == 0 {
+        return "even"
+    }
+    return "odd"
+})
+// grouped["even"] == []int{2,4,6}
+// grouped["odd"] == []int{1,3,5}
+```
+
+## Chunk
+
+```go
+nums := []int{1, 2, 3, 4, 5}
+chunks := fnkit.Chunk(nums, 2) // [][]int{{1,2},{3,4},{5}}
+```
+
+## Unique
+
+```go
+nums := []int{1,2,2,3,1,4}
+uniq := fnkit.Unique(nums) // []int{1,2,3,4}
+```
+
+## Flatten
+
+```go
+nested := [][]int{{1,2},{3,4}}
+flat := fnkit.Flatten(nested) // []int{1,2,3,4}
+```
+
+
 
 ## Installation
 
@@ -20,6 +86,7 @@ import "github.com/kishankumarhs/fnkit"
 
 
 ## Usage & Examples
+
 
 
 ### Result[T] (Rust-like error handling)
@@ -67,6 +134,7 @@ if !net.IsOk() {
 ```
 
 
+
 #### Edge Cases (Result[T])
 
 - `Ok(zeroValue)` is valid and `IsOk()` is true.
@@ -74,37 +142,73 @@ if !net.IsOk() {
 - Works with any type, including structs.
 
 
-### Map
+### Option[T] (Rust-like optional values)
+
+`Option[T]` is a generic container for an optional value, inspired by Rust. It allows for safe, idiomatic handling of values that may or may not be present, without using nil pointers.
+
+#### Example: Some and None
 
 ```go
-nums := []int{1, 2, 3}
-strs := fnkit.Map(nums, func(n int) string { return fmt.Sprintf("n=%d", n) })
-// strs == []string{"n=1", "n=2", "n=3"}
+opt := fnkit.Some(42)
+if opt.IsSome() {
+    fmt.Println("Value:", opt.Unwrap()) // prints 42
+}
+
+none := fnkit.None[int]()
+if none.IsNone() {
+    fmt.Println("No value")
+}
 ```
 
-### Reduce
+#### Example: UnwrapOr
 
 ```go
-sum := fnkit.Reduce([]int{1, 2, 3}, 0, func(acc, v int) int { return acc + v })
-// sum == 6
+opt := fnkit.Some("hello")
+val := opt.UnwrapOr("default") // val == "hello"
+
+none := fnkit.None[string]()
+val2 := none.UnwrapOr("default") // val2 == "default"
 ```
 
-### At
+#### Edge Cases (Option[T])
+
+- `Some(zeroValue)` is valid and `IsSome()` is true.
+- `None[T]()` is always `IsNone()`.
+- Works with any type, including structs.
+
+### GroupBy
 
 ```go
-s := []string{"a", "b", "c"}
-fnkit.At(s, 1) // "b"
-fnkit.At(s, -1) // "c"
-fnkit.At(s, 10) // "" (zero value)
-fnkit.At(s, -10) // "" (zero value)
+nums := []int{1, 2, 3, 4, 5, 6}
+grouped := fnkit.GroupBy(nums, func(n int) string {
+    if n%2 == 0 {
+        return "even"
+    }
+    return "odd"
+})
+// grouped["even"] == []int{2,4,6}
+// grouped["odd"] == []int{1,3,5}
 ```
 
-### Concat
+### Chunk
 
 ```go
-a := []int{1, 2}
-b := []int{3, 4}
-fnkit.Concat(a, b) // []int{1, 2, 3, 4}
+nums := []int{1, 2, 3, 4, 5}
+chunks := fnkit.Chunk(nums, 2) // [][]int{{1,2},{3,4},{5}}
+```
+
+### Unique
+
+```go
+nums := []int{1,2,2,3,1,4}
+uniq := fnkit.Unique(nums) // []int{1,2,3,4}
+```
+
+### Flatten
+
+```go
+nested := [][]int{{1,2},{3,4}}
+flat := fnkit.Flatten(nested) // []int{1,2,3,4}
 ```
 
 ### CopyWith
@@ -229,13 +333,13 @@ fnkit.Slice(s, -1, 10) // [4]
 fnkit.Slice(s, 10, 20) // []
 ```
 
-### Some
+### Any
 
 ```go
 s := []int{1, 2, 3}
-fnkit.Some(s, func(i int) bool { return i == 2 }) // true
-fnkit.Some(s, func(i int) bool { return i == 100 }) // false
-fnkit.Some([]int{}, func(i int) bool { return true }) // false
+fnkit.Any(s, func(i int) bool { return i == 2 }) // true
+fnkit.Any(s, func(i int) bool { return i == 100 }) // false
+fnkit.Any([]int{}, func(i int) bool { return true }) // false
 ```
 
 ### Splice
@@ -278,7 +382,7 @@ evens := fnkit.ToFilter(s2, func(i int) bool { return i%2 == 0 }) // evens==[2,4
 - Functions like `At`, `Pop`, `Shift` return the zero value and false if out of bounds or empty.
 - Negative indices are supported in `At`, `Slice`, and `Splice` (like Python).
 - `Filter` modifies the slice in-place; `ToFilter` returns a new filtered slice.
-- `Every` on an empty slice returns true (vacuous truth); `Some` on empty returns false.
+- `Every` on an empty slice returns true (vacuous truth); `Any` on empty returns false.
 - All functions are safe for any type (thanks to Go generics).
 
 ---
