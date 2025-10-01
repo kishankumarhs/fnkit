@@ -1,3 +1,7 @@
+# v0.6.0 (2025-10-02)
+
+- Added `datetime` submodule: friendly parse/format helpers, date math (add/subtract days, months, years, business days), business day checks, start/end of unit, week/quarter helpers, ISO week, weekend, next/previous weekday, truncate/round, days in month/year, leap year, ParseAny, timezone helpers, and humanize/relative time.
+- Comprehensive test coverage for all new datetime utilities.
 
 
 

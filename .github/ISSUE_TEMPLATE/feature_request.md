@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-description: Suggest an idea or utility for fnkit
+about: Suggest an idea or utility for fnkit
 labels: enhancement
 ---
 

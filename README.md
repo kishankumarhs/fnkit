@@ -2,7 +2,7 @@
 
 # fnkit
 
-**See also:** [fnkit/validations: Validation & Conversion Utilities](./validations/README.md)
+**See also:** [fnkit/validations: Validation & Conversion Utilities](./validations/README.md) · [fnkit/datetime: Date/Time Utilities](./datetime/README.md)
 
 **fnkit** is a modern Go utility library inspired by the best of JavaScript (like Lodash, Array methods) and Rust (Result type, functional error handling). It brings expressive, type-safe, and composable utilities to Go, making your code more concise, robust, and fun to write.
 

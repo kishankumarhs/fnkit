@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-description: File a bug report to help us improve fnkit
+about: File a bug report to help us improve fnkit
 labels: bug
 ---
 
