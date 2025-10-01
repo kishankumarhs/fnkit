@@ -1,24 +1,85 @@
 
+
 # fnkit
+
+**See also:** [fnkit/validations: Validation & Conversion Utilities](./validations/README.md)
 
 **fnkit** is a modern Go utility library inspired by the best of JavaScript (like Lodash, Array methods) and Rust (Result type, functional error handling). It brings expressive, type-safe, and composable utilities to Go, making your code more concise, robust, and fun to write.
 
 
+
 ## Installation
 
+### Main utilities
 ```sh
 go get github.com/kishankumarhs/fnkit
 ```
 
+### Concurrency utilities only
+```sh
+go get github.com/kishankumarhs/fnkit/concurrency
+```
+
 ## Import
 
+### Main utilities
 ```go
 import "github.com/kishankumarhs/fnkit"
+```
+
+### Concurrency utilities only
+```go
+import "github.com/kishankumarhs/fnkit/concurrency"
 ```
 
 
 
 
+
+
+## Concurrency Utilities
+
+### ParallelMap
+
+```go
+nums := []int{1, 2, 3, 4}
+doubled := fnkit.ParallelMap(nums, func(x int) int { return x * 2 })
+// doubled == []int{2, 4, 6, 8}
+```
+
+### ParallelForEach
+
+```go
+nums := []int{1, 2, 3, 4}
+var sum int64
+fnkit.ParallelForEach(nums, func(x int) { atomic.AddInt64(&sum, int64(x)) })
+// sum == 10
+```
+
+### Debounce
+
+```go
+var count int32
+debounced := fnkit.Debounce(func() { atomic.AddInt32(&count, 1) }, 50*time.Millisecond)
+for i := 0; i < 5; i++ {
+    debounced()
+}
+time.Sleep(100 * time.Millisecond)
+// count == 1 (function only called once after the last call)
+```
+
+### Throttle
+
+```go
+var count int32
+throttled := fnkit.Throttle(func() { atomic.AddInt32(&count, 1) }, 50*time.Millisecond)
+for i := 0; i < 5; i++ {
+    throttled()
+    time.Sleep(10 * time.Millisecond)
+}
+time.Sleep(100 * time.Millisecond)
+// count is 2 or 3 (function called at most once per 50ms)
+```
 
 ## String Utilities
 
