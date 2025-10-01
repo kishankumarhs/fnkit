@@ -1,38 +1,140 @@
 
+# fnkit
 
-## Option[T] (Rust-like optional values)
+**fnkit** is a modern Go utility library inspired by the best of JavaScript (like Lodash, Array methods) and Rust (Result type, functional error handling). It brings expressive, type-safe, and composable utilities to Go, making your code more concise, robust, and fun to write.
 
-`Option[T]` is a generic container for an optional value, inspired by Rust. It allows for safe, idiomatic handling of values that may or may not be present, without using nil pointers.
 
-**Example: Some and None**
+## Installation
 
-```go
-opt := fnkit.Some(42)
-if opt.IsSome() {
-    fmt.Println("Value:", opt.Unwrap()) // prints 42
-}
-
-none := fnkit.None[int]()
-if none.IsNone() {
-    fmt.Println("No value")
-}
+```sh
+go get github.com/kishankumarhs/fnkit
 ```
 
-**Example: UnwrapOr**
+## Import
 
 ```go
-opt := fnkit.Some("hello")
-val := opt.UnwrapOr("default") // val == "hello"
-
-none := fnkit.None[string]()
-val2 := none.UnwrapOr("default") // val2 == "default"
+import "github.com/kishankumarhs/fnkit"
 ```
 
-**Edge Cases**
 
-- `Some(zeroValue)` is valid and `IsSome()` is true.
-- `None[T]()` is always `IsNone()`.
-- Works with any type, including structs.
+
+
+
+## String Utilities
+
+fnkit provides a comprehensive set of string utility functions inspired by Python, JavaScript, and Rust. All are Unicode-safe and tested.
+
+### Repeat
+
+```go
+fnkit.Repeat("ab", 3) // "ababab"
+```
+
+### ReplaceAll
+
+```go
+fnkit.ReplaceAll("foo bar foo", "foo", "baz") // "baz bar baz"
+```
+
+### HasPrefix / HasSuffix
+
+```go
+fnkit.HasPrefix("hello world", "hello") // true
+fnkit.HasSuffix("hello world", "world") // true
+```
+
+### Contains / Count
+
+```go
+fnkit.Contains("banana", "nan") // true
+fnkit.Count("banana", "na") // 2
+```
+
+### ReverseString
+
+```go
+fnkit.ReverseString("a😊b") // "b😊a"
+```
+
+### IsAlpha / IsNumeric
+
+```go
+fnkit.IsAlpha("abcXYZ") // true
+fnkit.IsAlpha("abc123") // false
+fnkit.IsNumeric("12345") // true
+fnkit.IsNumeric("12a45") // false
+```
+
+### Capitalize
+
+```go
+fnkit.Capitalize("hELLO") // "Hello"
+```
+
+### StripLeft / StripRight
+
+```go
+fnkit.StripLeft("  hello  ") // "hello  "
+fnkit.StripRight("  hello  ") // "  hello"
+```
+
+### Partition / Rpartition
+
+```go
+fnkit.Partition("foo-bar-baz", "-") // ("foo", "-", "bar-baz")
+fnkit.Rpartition("foo-bar-baz", "-") // ("foo-bar", "-", "baz")
+```
+
+### Words
+
+```go
+fnkit.Words("Go is  awesome") // []string{"Go", "is", "awesome"}
+```
+
+### CamelCase / SnakeCase / KebabCase
+
+```go
+fnkit.CamelCase("hello world_test-case") // "helloWorldTestCase"
+fnkit.SnakeCase("hello world_test-case") // "hello_world_test_case"
+fnkit.KebabCase("hello world_test-case") // "hello-world-test-case"
+```
+
+### IsUpper / IsLower
+
+```go
+fnkit.IsUpper("ABC") // true
+fnkit.IsUpper("AbC") // false
+fnkit.IsLower("abc") // true
+fnkit.IsLower("aBc") // false
+```
+
+### SwapCase
+
+```go
+fnkit.SwapCase("aBc") // "AbC"
+```
+
+### Remove / Keep
+
+```go
+fnkit.Remove("a1b2c3", unicode.IsDigit) // "abc"
+fnkit.Keep("a1b2c3", unicode.IsDigit) // "123"
+```
+
+### PadCenter
+
+```go
+fnkit.PadCenter("hi", 6, '*') // "**hi**"
+```
+
+----
+
+
+## Usage & Examples
+
+
+
+
 
 ## GroupBy
 
@@ -69,27 +171,7 @@ nested := [][]int{{1,2},{3,4}}
 flat := fnkit.Flatten(nested) // []int{1,2,3,4}
 ```
 
-
-
-## Installation
-
-```sh
-go get github.com/kishankumarhs/fnkit
-```
-
-## Import
-
-```go
-import "github.com/kishankumarhs/fnkit"
-```
-
-
-
-## Usage & Examples
-
-
-
-### Result[T] (Rust-like error handling)
+## Result[T] (Rust-like error handling)
 
 `Result[T]` is a generic container for a value or an error, inspired by Rust. It allows for functional error handling without repetitive `if err != nil` checks.
 
@@ -176,7 +258,8 @@ val2 := none.UnwrapOr("default") // val2 == "default"
 - `None[T]()` is always `IsNone()`.
 - Works with any type, including structs.
 
-### GroupBy
+
+## GroupBy (slice)
 
 ```go
 nums := []int{1, 2, 3, 4, 5, 6}
@@ -190,21 +273,24 @@ grouped := fnkit.GroupBy(nums, func(n int) string {
 // grouped["odd"] == []int{1,3,5}
 ```
 
-### Chunk
+
+## Chunk (slice)
 
 ```go
 nums := []int{1, 2, 3, 4, 5}
 chunks := fnkit.Chunk(nums, 2) // [][]int{{1,2},{3,4},{5}}
 ```
 
-### Unique
+
+## Unique (slice)
 
 ```go
 nums := []int{1,2,2,3,1,4}
 uniq := fnkit.Unique(nums) // []int{1,2,3,4}
 ```
 
-### Flatten
+
+## Flatten (slice)
 
 ```go
 nested := [][]int{{1,2},{3,4}}
@@ -374,7 +460,7 @@ s2 := []int{1, 2, 3, 4}
 evens := fnkit.ToFilter(s2, func(i int) bool { return i%2 == 0 }) // evens==[2,4], s2 unchanged
 ```
 
----
+----
 
 ## Edge Cases
 
@@ -385,7 +471,7 @@ evens := fnkit.ToFilter(s2, func(i int) bool { return i%2 == 0 }) // evens==[2,4
 - `Every` on an empty slice returns true (vacuous truth); `Any` on empty returns false.
 - All functions are safe for any type (thanks to Go generics).
 
----
+----
 
 ## License
 

@@ -1,5 +1,11 @@
 
+
 # Changelog
+
+## v0.4.0 (2025-10-02)
+
+- Added comprehensive string utility functions: Repeat, ReplaceAll, HasPrefix, HasSuffix, Contains, Count, ReverseString, IsAlpha, IsNumeric, Capitalize, StripLeft, StripRight, Partition, Rpartition, Words, CamelCase, SnakeCase, KebabCase, IsUpper, IsLower, SwapCase, Remove, Keep, PadCenter.
+- All string utilities are Unicode-safe and fully tested.
 
 ## v0.3.0 (2025-10-02)
 
