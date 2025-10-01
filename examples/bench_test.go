@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fnkit"
-	"fnkit/concurrency"
-	"fnkit/validations"
 	"strings"
 	"testing"
+
+	"github.com/kishankumarhs/fnkit"
+	"github.com/kishankumarhs/fnkit/concurrency"
+	"github.com/kishankumarhs/fnkit/validations"
 )
 
 func BenchmarkParallelMap(b *testing.B) {
